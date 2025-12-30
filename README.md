@@ -79,6 +79,10 @@ docker-compose up -d
 
 Open http://localhost:3000
 
+You should see the login screen:
+
+![Arka Login Screen](Arka%20Login%20Screen.png)
+
 Login with:
 - Username: `admin`
 - Password: `admin123`
