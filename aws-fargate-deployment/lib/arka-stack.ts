@@ -130,7 +130,9 @@ export class ArkaStack extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'ArkaCluster', {
       vpc,
       clusterName: `${endpointName}-cluster`,
-      containerInsights: true,
+      containerInsightsV2: {
+        enhancedMonitoring: true,
+      },
     });
 
     // Certificate for HTTPS (optional)

@@ -24,7 +24,7 @@ new ArkaStack(app, `${endpointName}-stack`, {
   hostedZoneId,
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION || 'us-west-2',
+    region: process.env.AWS_REGION || process.env.CDK_DEFAULT_REGION || 'us-west-2',
   },
   description: `Arka deployment with endpoint name: ${endpointName}`,
   tags: {

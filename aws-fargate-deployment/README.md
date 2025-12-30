@@ -6,7 +6,7 @@ Deploy Arka to AWS in minutes using **AWS CDK** (Cloud Development Kit) with ser
 
 ### Prerequisites
 
-1. **AWS Account** with appropriate permissions
+1. **AWS Account** with appropriate permissions (see [IAM Requirements](#iam-requirements) below)
 2. **AWS CLI** configured: `aws configure`
 3. **Node.js 18+** installed
 4. **Anthropic API Key** from https://console.anthropic.com
@@ -206,6 +206,70 @@ Deploy without `--domain-name`, then manually create a CNAME:
 
 # 3. Request ACM certificate manually for chat.company.com
 # 4. Add certificate to ALB listener
+```
+
+## 🔐 IAM Requirements
+
+Your AWS IAM user/role needs the following permissions to deploy Arka:
+
+### Required IAM Policies
+
+Attach these AWS managed policies to your IAM user:
+- `AdministratorAccess` (recommended for first-time setup)
+
+Or, for least-privilege access, create a custom policy with these permissions:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*",
+        "ec2:*",
+        "ecs:*",
+        "ecr:*",
+        "elasticloadbalancing:*",
+        "rds:*",
+        "secretsmanager:*",
+        "s3:*",
+        "iam:*",
+        "logs:*",
+        "route53:*",
+        "acm:*",
+        "ssm:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+### Attaching Permissions via AWS Console
+
+1. Go to [IAM Console](https://console.aws.amazon.com/iam/)
+2. Click on **Users** → Select your user (e.g., `arka-selfhosted-tester`)
+3. Click **Add permissions** → **Attach policies directly**
+4. Search for and select `AdministratorAccess` (or create custom policy above)
+5. Click **Next** → **Add permissions**
+
+### Attaching Permissions via AWS CLI
+
+```bash
+# For AdministratorAccess (easiest)
+aws iam attach-user-policy \
+  --user-name arka-selfhosted-tester \
+  --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# Or create and attach custom policy
+aws iam create-policy \
+  --policy-name ArkaCDKDeployPolicy \
+  --policy-document file://arka-iam-policy.json
+
+aws iam attach-user-policy \
+  --user-name arka-selfhosted-tester \
+  --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ArkaCDKDeployPolicy
 ```
 
 ## 💰 Cost Breakdown
