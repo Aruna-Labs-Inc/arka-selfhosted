@@ -408,9 +408,8 @@ bootstrap_cdk() {
         --region "$AWS_REGION" &>/dev/null; then
         
         progress "Bootstrapping CDK (first-time setup, takes ~2 minutes)..."
-        npm run cdk bootstrap \
-            "aws://${AWS_ACCOUNT}/${AWS_REGION}" \
-            --region "$AWS_REGION"
+        npm run cdk -- bootstrap \
+            "aws://${AWS_ACCOUNT}/${AWS_REGION}"
         success "CDK bootstrapped successfully"
     else
         success "CDK already bootstrapped"
