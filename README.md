@@ -1,58 +1,116 @@
-# Arka Self-Hosted Installation
+# Docker Quickstart - Run Arka Locally
 
-This repository contains instructions for deploying the self-hosted version of [Arka](https://arka.so).
+Get Arka running on your machine in 2 minutes.
 
 ## Prerequisites
 
-- Docker installed on your system
-- AWS CLI configured (for ECR access)
-- Access permissions to the Arka ECR repository
+- Docker installed
+- AWS CLI configured
 
-## Installation Instructions
+## Quick Start
 
-### 1. Request ECR Access
-
-Contact the Aruna Labs team to request permission to pull from the Arka ECR repository:
-
-**Email:** devops@arunalabs.io
-
-**Request:** Access to pull from ECR repository:
-```
-634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:2307f6e
-```
-
-Note: The version tag (e.g., `2307f6e`) keeps updating. The team will provide you with the latest version tag.
-
-### 2. Authenticate with ECR
-
-Once you have been granted access, authenticate Docker with the Arka ECR:
+### 1. Login to ECR
 
 ```bash
-aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 634018648842.dkr.ecr.us-west-2.amazonaws.com
+aws ecr get-login-password --region us-west-2 | \
+  docker login --username AWS --password-stdin 634018648842.dkr.ecr.us-west-2.amazonaws.com
 ```
 
-### 3. Pull the Arka Image
-
-Pull the latest Arka image (replace `<version>` with the version tag provided by the team):
+### 2. Pull the Image
 
 ```bash
-docker pull 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:<version>
+docker pull 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest
 ```
 
-### 4. Run the Container
+### 3. Create docker-compose.yml
 
-Run the Arka container:
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: arka
+      POSTGRES_USER: arka
+      POSTGRES_PASSWORD: arka_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  arka:
+    image: 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      AUTH_SECRET: change-me-in-production
+      NEXTAUTH_SECRET: change-me-in-production
+      DATABASE_URL: postgresql://arka:arka_password@postgres:5432/arka
+      POSTGRES_URL: postgresql://arka:arka_password@postgres:5432/arka
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      SSO_ONLY_MODE: "false"
+      SUPERADMIN_USERNAME: admin
+      SUPERADMIN_PASSWORD: admin123
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+```
+
+### 4. Set Your API Keys
 
 ```bash
-docker run -d -p 8080:8080 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:<version>
+export OPENAI_API_KEY=sk-...
+export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Adjust the port mapping and add any necessary environment variables as needed for your deployment.
+### 5. Start Arka
 
-## Support
+```bash
+docker-compose up -d
+```
 
-For issues or questions, contact the Aruna Labs team at devops@arunalabs.io.
+### 6. Access Arka
 
-## License
+Open http://localhost:3000
 
-See [LICENSE](LICENSE) file for details.
+Login with:
+- Username: `admin`
+- Password: `admin123`
+
+## View Logs
+
+```bash
+docker-compose logs -f arka
+```
+
+## Stop Arka
+
+```bash
+docker-compose down
+```
+
+## Troubleshooting
+
+**Container won't start?**
+```bash
+docker-compose logs arka
+```
+
+**Port 3000 already in use?**
+```bash
+# Change port in docker-compose.yml
+ports:
+  - "8080:3000"  # Use port 8080 instead
+```
+
+**Need to reset database?**
+```bash
+docker-compose down -v
+docker-compose up -d
+```
