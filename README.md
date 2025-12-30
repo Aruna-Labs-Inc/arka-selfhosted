@@ -1,120 +1,63 @@
-# Docker Quickstart - Run Arka Locally
+# Arka Self-Hosted
 
-Get Arka running on your machine in 2 minutes.
+Deploy Arka to AWS in minutes using **AWS CDK** (Cloud Development Kit) with serverless **Fargate** containers, managed **RDS PostgreSQL**, and auto-scaling **Application Load Balancer**.
 
-## Prerequisites
+## 🚀 Quick Start
 
-- Docker installed
-- AWS CLI configured
+### Prerequisites
 
-## Quick Start
+1. **AWS Account** with appropriate permissions
+2. **AWS CLI** configured: `aws configure`
+3. **Node.js 18+** installed
+4. **Anthropic API Key** from https://console.anthropic.com
 
-### 1. Login to ECR
+### Deploy in 3 Steps
 
-```bash
-aws ecr get-login-password --region us-west-2 | \
-  docker login --username AWS --password-stdin 634018648842.dkr.ecr.us-west-2.amazonaws.com
-```
-
-### 2. Pull the Image
+#### 1. Clone the Repository
 
 ```bash
-docker pull 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest
+git clone https://github.com/Aruna-Labs-Inc/arka-selfhosted.git
+cd arka-selfhosted
 ```
 
-### 3. Create docker-compose.yml
-
-```yaml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: arka
-      POSTGRES_USER: arka
-      POSTGRES_PASSWORD: arka_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  arka:
-    image: 634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-      AUTH_SECRET: change-me-in-production
-      NEXTAUTH_SECRET: change-me-in-production
-      DATABASE_URL: postgresql://arka:arka_password@postgres:5432/arka
-      POSTGRES_URL: postgresql://arka:arka_password@postgres:5432/arka
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-      SSO_ONLY_MODE: "false"
-      SUPERADMIN_USERNAME: admin
-      SUPERADMIN_PASSWORD: admin123
-      NEXTAUTH_URL: http://localhost:3000
-    depends_on:
-      - postgres
-
-volumes:
-  postgres_data:
-```
-
-### 4. Set Your API Keys
+#### 2. Navigate to Deployment Folder
 
 ```bash
-export OPENAI_API_KEY=sk-...
-export ANTHROPIC_API_KEY=sk-ant-...
+cd aws-fargate-deployment
 ```
 
-### 5. Start Arka
+#### 3. Run Deployment Script
 
 ```bash
-docker-compose up -d
+./deploy-fargate.sh \
+  --account-id 123456789012 \
+  --endpoint-name arka \
+  --anthropic-key sk-ant-...
 ```
 
-### 6. Access Arka
+#### 4. Access Your Arka Instance
 
-Open http://localhost:3000
+After deployment completes (10-15 min), the script outputs your application URL:
 
-You should see the login screen:
-
-![Arka Login Screen](Arka%20Login%20Screen.png)
-
-Login with:
-- Username: `admin`
-- Password: `admin123`
-
-## View Logs
-
-```bash
-docker-compose logs -f arka
+```
+✅ Deployment complete!
+🌐 Application URL: http://arka-alb-1234567890.us-west-2.elb.amazonaws.com
 ```
 
-## Stop Arka
+Open the URL in your browser to access Arka.
 
-```bash
-docker-compose down
-```
+**What you get:**
+- ✅ Complete production environment
+- ✅ Public HTTPS URL (or HTTP if no custom domain)
+- ✅ Auto-scaling from 2-10 containers based on load
+- ✅ Automatic database backups
 
-## Troubleshooting
+## 📖 Full Documentation
 
-**Container won't start?**
-```bash
-docker-compose logs arka
-```
-
-**Port 3000 already in use?**
-```bash
-# Change port in docker-compose.yml
-ports:
-  - "8080:3000"  # Use port 8080 instead
-```
-
-**Need to reset database?**
-```bash
-docker-compose down -v
-docker-compose up -d
-```
+See the [AWS Fargate Deployment Guide](aws-fargate-deployment/README.md) for:
+- Interactive and command-line deployment modes
+- Custom domain configuration
+- Cost breakdown and optimization tips
+- Monitoring and troubleshooting
+- Security best practices
+- CI/CD integration examples
