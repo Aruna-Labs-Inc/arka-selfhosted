@@ -408,6 +408,7 @@ bootstrap_cdk() {
         --region "$AWS_REGION" &>/dev/null; then
         
         progress "Bootstrapping CDK (first-time setup, takes ~2 minutes)..."
+        export AWS_REGION="$AWS_REGION"
         export CDK_DEFAULT_ACCOUNT="$AWS_ACCOUNT"
         export CDK_DEFAULT_REGION="$AWS_REGION"
         export ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY"
@@ -424,6 +425,7 @@ deploy_stack() {
     
     cd "$SCRIPT_DIR"
     
+    export AWS_REGION="$AWS_REGION"
     export CDK_DEFAULT_ACCOUNT="$AWS_ACCOUNT"
     export CDK_DEFAULT_REGION="$AWS_REGION"
     export ENDPOINT_NAME="$ENDPOINT_NAME"
