@@ -32,6 +32,7 @@ services:
       
       # NextAuth
       AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: http://localhost:3000
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_SECRET: ${AUTH_SECRET}
       
