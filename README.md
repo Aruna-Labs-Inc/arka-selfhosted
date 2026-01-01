@@ -18,8 +18,8 @@ Run Arka locally with Docker - no cloud infrastructure needed!
 ### 1. Clone this repository
 
 ```bash
-git clone https://github.com/arunalabs/arka-selfhosted-demo.git
-cd arka-selfhosted-demo
+git clone https://github.com/Aruna-Labs-Inc/arka-selfhosted.git
+cd arka-selfhosted
 ```
 
 ### 2. Deploy Arka
@@ -241,7 +241,7 @@ Your Machine
 For issues or questions:
 - Check logs: `./logs.sh`
 - Review status: `./status.sh`
-- GitHub Issues: [Create an issue](https://github.com/arunalabs/arka-selfhosted-demo/issues)
+- GitHub Issues: [Create an issue](https://github.com/Aruna-Labs-Inc/arka-selfhosted/issues)
 - Contact: billing@arunalabs.io
 
 ## License
