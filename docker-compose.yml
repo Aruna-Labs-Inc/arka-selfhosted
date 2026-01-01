@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: arka-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: arka
+      POSTGRES_USER: arka_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arka_user -d arka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - arka-network
+
+  arka:
+    image: ${ARKA_IMAGE:-634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest}
+    container_name: arka-app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      # Database
+      POSTGRES_URL: postgresql://arka_user:${POSTGRES_PASSWORD}@postgres:5432/arka?sslmode=disable
+      DATABASE_URL: postgresql://arka_user:${POSTGRES_PASSWORD}@postgres:5432/arka?sslmode=disable
+      USE_RDS_IAM: "false"
+      
+      # NextAuth
+      AUTH_SECRET: ${AUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${AUTH_SECRET}
+      
+      # AI Providers
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      XAI_API_KEY: ${XAI_API_KEY}
+      
+      # Application Settings
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      SSO_ONLY_MODE: ${SSO_ONLY_MODE:-false}
+      
+      # Arka Evaluation Key (Required)
+      ARKA_EVALUATION_KEY: ${ARKA_EVALUATION_KEY}
+      
+      # S3 (optional)
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-us-west-2}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - arka-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  arka-network:
+    driver: bridge

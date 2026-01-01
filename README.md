@@ -1,63 +1,249 @@
-# Arka Self-Hosted
+# Arka Self-Hosted Demo
 
-Deploy Arka to AWS in minutes using **AWS CDK** (Cloud Development Kit) with serverless **Fargate** containers, managed **RDS PostgreSQL**, and auto-scaling **Application Load Balancer**.
+**Quick proof-of-concept deployment to evaluate Arka for your use case.**
 
-## 🚀 Quick Start
+This repository provides a simple, one-script deployment of [Arka](https://arka.so) using Docker. Use this demo to:
 
-### Prerequisites
+- ✅ Test Arka with your own data and workflows
+- ✅ Evaluate performance and capabilities
+- ✅ Verify it meets your requirements
+- ✅ Quick proof-of-concept before production deployment
 
-1. **AWS Account** with appropriate permissions
-2. **AWS CLI** configured: `aws configure`
-3. **Node.js 18+** installed
-4. **Anthropic API Key** from https://console.anthropic.com
+Run Arka locally with Docker - no cloud infrastructure needed!
 
-### Deploy in 3 Steps
+> **Note:** This is an evaluation version. For production deployments or assistance, please contact us at billing@arunalabs.io
 
-#### 1. Clone the Repository
+## Quick Start
 
-```bash
-git clone https://github.com/Aruna-Labs-Inc/arka-selfhosted.git
-cd arka-selfhosted
-```
-
-#### 2. Navigate to Deployment Folder
+### 1. Clone this repository
 
 ```bash
-cd aws-fargate-deployment
+git clone https://github.com/arunalabs/arka-selfhosted-demo.git
+cd arka-selfhosted-demo
 ```
 
-#### 3. Run Deployment Script
+### 2. Deploy Arka
+
+Run the deployment script:
 
 ```bash
-./deploy-fargate.sh \
-  --account-id 123456789012 \
-  --endpoint-name arka \
-  --anthropic-key sk-ant-...
+./deploy.sh
 ```
 
-#### 4. Access Your Arka Instance
+The script will automatically:
+- ✅ Check Docker is installed and running
+- ✅ Generate secure passwords and secrets
+- ✅ Pull Arka Docker image
+- ✅ Start Arka and PostgreSQL
 
-After deployment completes (10-15 min), the script outputs your application URL:
+### 3. Access Arka
+
+Once deployment completes, open your browser to:
+
+**http://localhost:3000**
+
+Create an account and start testing!
+
+## Prerequisites
+
+1. **Docker** installed and running
+   - macOS/Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+   - Linux: [Docker Engine](https://docs.docker.com/engine/install/)
+
+2. **docker-compose** (usually included with Docker Desktop)
+
+3. **Arka License Key** - See [arka.so/self-hosted](https://arka.so/self-hosted) to obtain your license key
+
+That's it! No AWS account, no cloud infrastructure, no SSH keys needed.
+
+## Management Commands
+
+### View Logs
+
+```bash
+./logs.sh          # View all logs
+./logs.sh arka     # View Arka app logs only
+./logs.sh postgres # View database logs only
+```
+
+### Check Status
+
+```bash
+./status.sh
+```
+
+Shows running containers and their health status.
+
+### Update to Latest Version
+
+```bash
+./update.sh
+```
+
+Pulls the latest Arka image and restarts services.
+
+### Stop Arka
+
+```bash
+./stop.sh
+```
+
+Stops Arka services (data is preserved).
+
+### Start Arka
+
+```bash
+./start.sh
+```
+
+Starts Arka services again after stopping.
+
+### Terminate (Delete Everything)
+
+```bash
+./terminate.sh
+```
+
+⚠️ **Warning:** This permanently deletes all data, containers, and volumes!
+
+## Configuration
+
+### Auto-Generated (Default)
+
+The deployment script automatically generates:
+- PostgreSQL password (secure random string)
+- NextAuth secret (secure random string)
+- `.env` file with all configuration
+
+### Custom Configuration (Optional)
+
+If you want to customize settings, create a `.env` file before running `./deploy.sh`:
+
+```bash
+cp .env.ec2.example .env
+```
+
+Then edit `.env` with your custom values:
+
+```bash
+# Database
+POSTGRES_PASSWORD=your_secure_password
+
+# Authentication
+AUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+# Optional: AI Provider API Keys
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+XAI_API_KEY=xai-...
+
+# Optional: S3 Storage
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+S3_BUCKET_NAME=...
+```
+
+## Port Conflicts
+
+If port 3000 is already in use, the deployment script will:
+1. Detect the conflict
+2. Ask if you want to use a different port
+3. Automatically configure Arka to use the new port
+
+## Troubleshooting
+
+### Docker not running
 
 ```
-✅ Deployment complete!
-🌐 Application URL: http://arka-alb-1234567890.us-west-2.elb.amazonaws.com
+Error: Docker daemon is not running
 ```
 
-Open the URL in your browser to access Arka.
+**Solution:** Start Docker Desktop or run `sudo systemctl start docker`
 
-**What you get:**
-- ✅ Complete production environment
-- ✅ Public HTTPS URL (or HTTP if no custom domain)
-- ✅ Auto-scaling from 2-10 containers based on load
-- ✅ Automatic database backups
+### Port already in use
 
-## 📖 Full Documentation
+```
+Port 3000 is already in use
+```
 
-See the [AWS Fargate Deployment Guide](aws-fargate-deployment/README.md) for:
-- Interactive and command-line deployment modes
-- Custom domain configuration
-- Cost breakdown and optimization tips
-- Monitoring and troubleshooting
-- Security best practices
-- CI/CD integration examples
+**Solution:** The script will prompt you to choose a different port, or stop the service using port 3000
+
+### Cannot pull Arka image
+
+```
+Cannot access Arka Docker image
+```
+
+**Solution:** Contact us at billing@arunalabs.io to get access for the Arka Docker image
+
+### Services not starting
+
+View logs to diagnose:
+
+```bash
+./logs.sh
+```
+
+Common issues:
+- Database connection errors: Check `.env` file for correct `POSTGRES_PASSWORD`
+- Port conflicts: Use `./status.sh` to check what's running
+
+## How It Works
+
+### Architecture
+
+```
+Your Machine
+┌──────────────────────────────────┐
+│                                  │
+│  Browser → http://localhost:3000 │
+│                ↓                 │
+│  ┌──────────────────────┐       │
+│  │  Arka App            │       │
+│  │  (Docker Container)  │       │
+│  └──────────┬───────────┘       │
+│             ↓                    │
+│  ┌──────────────────────┐       │
+│  │  PostgreSQL          │       │
+│  │  (Docker Container)  │       │
+│  └──────────────────────┘       │
+│                                  │
+└──────────────────────────────────┘
+```
+
+### What's Running
+
+- **arka-app**: The Arka application (Node.js/Next.js)
+- **arka-postgres**: PostgreSQL database for storing data
+- **arka-network**: Isolated Docker network for containers to communicate
+- **postgres_data**: Docker volume for persistent database storage
+
+## File Structure
+
+```
+├── README.md              # This file
+├── docker-compose.yml     # Docker services definition
+├── .env.ec2.example      # Environment template
+├── .env                  # Your configuration (auto-generated)
+│
+├── deploy.sh             # Deploy Arka
+├── update.sh             # Update to latest version
+├── start.sh              # Start services
+├── stop.sh               # Stop services
+├── terminate.sh          # Delete everything
+├── logs.sh               # View logs
+└── status.sh             # Check status
+```
+
+## Support
+
+For issues or questions:
+- Check logs: `./logs.sh`
+- Review status: `./status.sh`
+- GitHub Issues: [Create an issue](https://github.com/arunalabs/arka-selfhosted-demo/issues)
+- Contact: billing@arunalabs.io
+
+## License
+
+Same as the main Arka project.
