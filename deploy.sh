@@ -113,6 +113,21 @@ if [ -f ".env" ]; then
             exit 1
         fi
         
+        # Validate key with API
+        echo -e "  ${DIM}→ Validating evaluation key...${NC}"
+        VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
+            -d "product_id=arkaevaluate" \
+            -d "license_key=${ARKA_EVALUATION_KEY}")
+        
+        if [ "$VALIDATION_RESPONSE" != "200" ]; then
+            echo -e "  ${RED}✗${NC} Invalid evaluation key"
+            echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
+            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+            echo ""
+            exit 1
+        fi
+        echo -e "  ${GREEN}✓${NC} Evaluation key validated"
+        
         # Add to .env file
         echo "" >> .env
         echo "# Arka Evaluation Key" >> .env
@@ -127,7 +142,21 @@ if [ -f ".env" ]; then
             echo ""
             exit 1
         fi
-        echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found and valid format"
+        
+        # Validate key with API
+        echo -e "  ${DIM}→ Validating evaluation key...${NC}"
+        VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
+            -d "product_id=arkaevaluate" \
+            -d "license_key=${ARKA_EVALUATION_KEY}")
+        
+        if [ "$VALIDATION_RESPONSE" != "200" ]; then
+            echo -e "  ${RED}✗${NC} Invalid evaluation key"
+            echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
+            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+            echo ""
+            exit 1
+        fi
+        echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found and validated"
     fi
 else
     # Generate new configuration
@@ -145,6 +174,21 @@ else
         echo ""
         exit 1
     fi
+    
+    # Validate key with API
+    echo -e "  ${DIM}→ Validating evaluation key...${NC}"
+    VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
+        -d "product_id=arkaevaluate" \
+        -d "license_key=${ARKA_EVALUATION_KEY}")
+    
+    if [ "$VALIDATION_RESPONSE" != "200" ]; then
+        echo -e "  ${RED}✗${NC} Invalid evaluation key"
+        echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
+        echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+        echo ""
+        exit 1
+    fi
+    echo -e "  ${GREEN}✓${NC} Evaluation key validated"
     
     POSTGRES_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)
     AUTH_SECRET=$(openssl rand -base64 32)
