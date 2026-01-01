@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -21,6 +19,7 @@ services:
 
   arka:
     image: ${ARKA_IMAGE:-ghcr.io/aruna-labs-inc/arka:latest}
+    platform: linux/amd64
     container_name: arka-app
     restart: unless-stopped
     ports:
