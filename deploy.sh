@@ -99,10 +99,19 @@ if [ -f ".env" ]; then
         echo -e "  ${YELLOW}⚠${NC}  Missing ARKA_EVALUATION_KEY"
         echo ""
         echo -e "  ${BOLD}Arka requires an evaluation key to run.${NC}"
-        echo -e "  ${DIM}See ${CYAN}https://arka.so/self-hosted${NC}${DIM} to obtain license key${NC}"
+        echo -e "  ${DIM}Get your key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
         echo ""
         read -p "  Enter your ARKA_EVALUATION_KEY: " ARKA_EVALUATION_KEY
         echo ""
+        
+        # Validate format (UUID-like format with dashes)
+        if [[ ! "$ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
+            echo -e "  ${RED}✗${NC} Invalid evaluation key format"
+            echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
+            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+            echo ""
+            exit 1
+        fi
         
         # Add to .env file
         echo "" >> .env
@@ -110,15 +119,32 @@ if [ -f ".env" ]; then
         echo "ARKA_EVALUATION_KEY=${ARKA_EVALUATION_KEY}" >> .env
         echo -e "  ${GREEN}✓${NC} Added ARKA_EVALUATION_KEY to .env"
     else
-        echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found"
+        # Validate existing key format
+        if [[ ! "$ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
+            echo -e "  ${RED}✗${NC} Invalid evaluation key format in .env"
+            echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
+            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+            echo ""
+            exit 1
+        fi
+        echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found and valid format"
     fi
 else
     # Generate new configuration
     echo -e "  ${BOLD}Arka requires an evaluation key to run.${NC}"
-    echo -e "  ${DIM}See ${CYAN}https://arka.so/self-hosted${NC}${DIM} to obtain license key${NC}"
+    echo -e "  ${DIM}Get your key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
     echo ""
     read -p "  Enter your ARKA_EVALUATION_KEY: " ARKA_EVALUATION_KEY
     echo ""
+    
+    # Validate format (UUID-like format with dashes)
+    if [[ ! "$ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
+        echo -e "  ${RED}✗${NC} Invalid evaluation key format"
+        echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
+        echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+        echo ""
+        exit 1
+    fi
     
     POSTGRES_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)
     AUTH_SECRET=$(openssl rand -base64 32)
