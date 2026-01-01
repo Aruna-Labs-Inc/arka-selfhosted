@@ -115,11 +115,11 @@ if [ -f ".env" ]; then
         
         # Validate key with API
         echo -e "  ${DIM}→ Validating evaluation key...${NC}"
-        VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
-            -d "product_id=arkaevaluate" \
-            -d "license_key=${ARKA_EVALUATION_KEY}")
+        VALIDATION_RESPONSE=$(curl -s "https://api.gumroad.com/v2/licenses/verify" \
+            -d "product_id=xIqgG_9GR5uk0aSC5mhEUg==" \
+            -d "license_key=${ARKA_EVALUATION_KEY}" | grep -o '"success":true')
         
-        if [ "$VALIDATION_RESPONSE" != "200" ]; then
+        if [ -z "$VALIDATION_RESPONSE" ]; then
             echo -e "  ${RED}✗${NC} Invalid evaluation key"
             echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
             echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
@@ -159,11 +159,11 @@ if [ -f ".env" ]; then
             
             # Validate key with API
             echo -e "  ${DIM}→ Validating evaluation key...${NC}"
-            VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
-                -d "product_id=arkaevaluate" \
-                -d "license_key=${NEW_ARKA_EVALUATION_KEY}")
+            VALIDATION_RESPONSE=$(curl -s "https://api.gumroad.com/v2/licenses/verify" \
+                -d "product_id=xIqgG_9GR5uk0aSC5mhEUg==" \
+                -d "license_key=${NEW_ARKA_EVALUATION_KEY}" | grep -o '"success":true')
             
-            if [ "$VALIDATION_RESPONSE" != "200" ]; then
+            if [ -z "$VALIDATION_RESPONSE" ]; then
                 echo -e "  ${RED}✗${NC} Invalid evaluation key"
                 echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
                 echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
@@ -189,11 +189,11 @@ if [ -f ".env" ]; then
             
             # Validate key with API
             echo -e "  ${DIM}→ Validating evaluation key...${NC}"
-            VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
-                -d "product_id=arkaevaluate" \
-                -d "license_key=${ARKA_EVALUATION_KEY}")
+            VALIDATION_RESPONSE=$(curl -s "https://api.gumroad.com/v2/licenses/verify" \
+                -d "product_id=xIqgG_9GR5uk0aSC5mhEUg==" \
+                -d "license_key=${ARKA_EVALUATION_KEY}" | grep -o '"success":true')
             
-            if [ "$VALIDATION_RESPONSE" != "200" ]; then
+            if [ -z "$VALIDATION_RESPONSE" ]; then
                 echo -e "  ${RED}✗${NC} Invalid evaluation key"
                 echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
                 echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
@@ -222,11 +222,11 @@ else
     
     # Validate key with API
     echo -e "  ${DIM}→ Validating evaluation key...${NC}"
-    VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
-        -d "product_id=arkaevaluate" \
-        -d "license_key=${ARKA_EVALUATION_KEY}")
+    VALIDATION_RESPONSE=$(curl -s "https://api.gumroad.com/v2/licenses/verify" \
+        -d "product_id=xIqgG_9GR5uk0aSC5mhEUg==" \
+        -d "license_key=${ARKA_EVALUATION_KEY}" | grep -o '"success":true')
     
-    if [ "$VALIDATION_RESPONSE" != "200" ]; then
+    if [ -z "$VALIDATION_RESPONSE" ]; then
         echo -e "  ${RED}✗${NC} Invalid evaluation key"
         echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
         echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
