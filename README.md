@@ -13,16 +13,32 @@ Run Arka locally with Docker - no cloud infrastructure needed!
 
 > **Note:** This is an evaluation version. For production deployments or assistance, please contact us at billing@arunalabs.io
 
+## Prerequisites
+
+1. **Docker** installed and running
+   - macOS/Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+   - Linux: [Docker Engine](https://docs.docker.com/engine/install/)
+
+2. **docker-compose** (usually included with Docker Desktop)
+
+3. **Arka Evaluation Key** - Get your evaluation key at https://arunadev7.gumroad.com/l/arkaevaluate
+
+That's it! No AWS account, no cloud infrastructure, no SSH keys needed.
+
 ## Quick Start
 
-### 1. Clone this repository
+### 1. Get your Evaluation Key
+
+Purchase your evaluation key at https://arunadev7.gumroad.com/l/arkaevaluate
+
+### 2. Clone this repository
 
 ```bash
 git clone https://github.com/Aruna-Labs-Inc/arka-selfhosted.git
 cd arka-selfhosted
 ```
 
-### 2. Deploy Arka
+### 3. Deploy Arka
 
 Run the deployment script:
 
@@ -36,25 +52,13 @@ The script will automatically:
 - ✅ Pull Arka Docker image
 - ✅ Start Arka and PostgreSQL
 
-### 3. Access Arka
+### 4. Access Arka
 
 Once deployment completes, open your browser to:
 
 **http://localhost:3000**
 
 Create an account and start testing!
-
-## Prerequisites
-
-1. **Docker** installed and running
-   - macOS/Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-   - Linux: [Docker Engine](https://docs.docker.com/engine/install/)
-
-2. **docker-compose** (usually included with Docker Desktop)
-
-3. **Arka Evaluation Key** - Get your evaluation key at https://arunadev7.gumroad.com/l/arkaevaluate
-
-That's it! No AWS account, no cloud infrastructure, no SSH keys needed.
 
 ## Management Commands
 
