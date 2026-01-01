@@ -138,15 +138,14 @@ AUTH_SECRET=${AUTH_SECRET}
 NEXTAUTH_URL=http://localhost:${PORT}
 
 # Optional: AI Provider API Keys
-# Uncomment and add your keys if needed
-# ANTHROPIC_API_KEY=
-# OPENAI_API_KEY=
-# XAI_API_KEY=
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
+XAI_API_KEY=
 
 # Optional: S3 Storage
-# AWS_ACCESS_KEY_ID=
-# AWS_SECRET_ACCESS_KEY=
-# S3_BUCKET_NAME=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+S3_BUCKET_NAME=
 EOF
     
     echo -e "  ${GREEN}✓${NC} Generated secure credentials"
