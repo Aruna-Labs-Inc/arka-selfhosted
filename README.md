@@ -52,7 +52,7 @@ Create an account and start testing!
 
 2. **docker-compose** (usually included with Docker Desktop)
 
-3. **Arka License Key** - See [arka.so/self-hosted](https://arka.so/self-hosted) to obtain your license key
+3. **Arka Evaluation Key** - Get your evaluation key at https://arunadev7.gumroad.com/l/arkaevaluate
 
 That's it! No AWS account, no cloud infrastructure, no SSH keys needed.
 
@@ -169,13 +169,13 @@ Port 3000 is already in use
 
 **Solution:** The script will prompt you to choose a different port, or stop the service using port 3000
 
-### Cannot pull Arka image
+### Missing Evaluation Key
 
 ```
-Cannot access Arka Docker image
+Arka requires a valid evaluation key
 ```
 
-**Solution:** Contact us at billing@arunalabs.io to get access for the Arka Docker image
+**Solution:** Get your evaluation key at https://arunadev7.gumroad.com/l/arkaevaluate
 
 ### Services not starting
 

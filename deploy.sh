@@ -162,14 +162,7 @@ echo -e "${BOLD}  ${PACKAGE} Deploying Arka${NC}"
 echo ""
 
 echo -e "  → Pulling Docker images..."
-if docker-compose pull 2>&1 | grep -q "pull access denied\|denied"; then
-    echo -e "  ${RED}✗${NC} Cannot access Arka Docker image"
-    echo ""
-    echo -e "  ${YELLOW}You need ECR access to pull the Arka image.${NC}"
-    echo -e "  Contact the Arka team at ${CYAN}arka.so${NC} to get access."
-    echo ""
-    exit 1
-fi
+docker-compose pull
 
 echo -e "  → Starting services..."
 docker-compose up -d

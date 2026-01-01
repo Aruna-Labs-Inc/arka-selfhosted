@@ -20,7 +20,7 @@ services:
       - arka-network
 
   arka:
-    image: ${ARKA_IMAGE:-634018648842.dkr.ecr.us-west-2.amazonaws.com/arka:latest}
+    image: ${ARKA_IMAGE:-ghcr.io/aruna-labs-inc/arka:latest}
     container_name: arka-app
     restart: unless-stopped
     ports:
