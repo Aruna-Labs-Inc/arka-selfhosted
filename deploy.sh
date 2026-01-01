@@ -134,29 +134,74 @@ if [ -f ".env" ]; then
         echo "ARKA_EVALUATION_KEY=${ARKA_EVALUATION_KEY}" >> .env
         echo -e "  ${GREEN}✓${NC} Added ARKA_EVALUATION_KEY to .env"
     else
-        # Validate existing key format
-        if [[ ! "$ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
-            echo -e "  ${RED}✗${NC} Invalid evaluation key format in .env"
-            echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
-            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
-            echo ""
-            exit 1
-        fi
+        # Ask user if they want to update the key
+        echo ""
+        echo -e "  ${BOLD}Current evaluation key:${NC} ${DIM}${ARKA_EVALUATION_KEY:0:8}-****-****-****${NC}"
+        echo ""
+        read -p "  Update evaluation key? (y/N): " UPDATE_KEY
+        echo ""
         
-        # Validate key with API
-        echo -e "  ${DIM}→ Validating evaluation key...${NC}"
-        VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
-            -d "product_id=arkaevaluate" \
-            -d "license_key=${ARKA_EVALUATION_KEY}")
-        
-        if [ "$VALIDATION_RESPONSE" != "200" ]; then
-            echo -e "  ${RED}✗${NC} Invalid evaluation key"
-            echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
-            echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+        if [[ "$UPDATE_KEY" =~ ^[Yy]$ ]]; then
+            echo -e "  ${BOLD}Enter new evaluation key${NC}"
+            echo -e "  ${DIM}Get your key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
             echo ""
-            exit 1
+            read -p "  Enter your ARKA_EVALUATION_KEY: " NEW_ARKA_EVALUATION_KEY
+            echo ""
+            
+            # Validate format
+            if [[ ! "$NEW_ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
+                echo -e "  ${RED}✗${NC} Invalid evaluation key format"
+                echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
+                echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+                echo ""
+                exit 1
+            fi
+            
+            # Validate key with API
+            echo -e "  ${DIM}→ Validating evaluation key...${NC}"
+            VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
+                -d "product_id=arkaevaluate" \
+                -d "license_key=${NEW_ARKA_EVALUATION_KEY}")
+            
+            if [ "$VALIDATION_RESPONSE" != "200" ]; then
+                echo -e "  ${RED}✗${NC} Invalid evaluation key"
+                echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
+                echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+                echo ""
+                exit 1
+            fi
+            echo -e "  ${GREEN}✓${NC} Evaluation key validated"
+            
+            # Update .env file
+            sed -i.bak "s/ARKA_EVALUATION_KEY=.*/ARKA_EVALUATION_KEY=${NEW_ARKA_EVALUATION_KEY}/" .env
+            rm -f .env.bak
+            echo -e "  ${GREEN}✓${NC} Updated ARKA_EVALUATION_KEY in .env"
+            ARKA_EVALUATION_KEY=$NEW_ARKA_EVALUATION_KEY
+        else
+            # Validate existing key format
+            if [[ ! "$ARKA_EVALUATION_KEY" =~ ^[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$ ]]; then
+                echo -e "  ${RED}✗${NC} Invalid evaluation key format in .env"
+                echo -e "  ${DIM}Expected format: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX${NC}"
+                echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+                echo ""
+                exit 1
+            fi
+            
+            # Validate key with API
+            echo -e "  ${DIM}→ Validating evaluation key...${NC}"
+            VALIDATION_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://api.gumroad.com/v2/licenses/verify" \
+                -d "product_id=arkaevaluate" \
+                -d "license_key=${ARKA_EVALUATION_KEY}")
+            
+            if [ "$VALIDATION_RESPONSE" != "200" ]; then
+                echo -e "  ${RED}✗${NC} Invalid evaluation key"
+                echo -e "  ${DIM}The key could not be validated. Please check your key.${NC}"
+                echo -e "  ${DIM}Get a valid key at ${CYAN}https://arunadev7.gumroad.com/l/arkaevaluate${NC}"
+                echo ""
+                exit 1
+            fi
+            echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found and validated"
         fi
-        echo -e "  ${GREEN}✓${NC} ARKA_EVALUATION_KEY found and validated"
     fi
 else
     # Generate new configuration
