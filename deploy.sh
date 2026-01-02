@@ -74,6 +74,11 @@ if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
         echo -e "  ${GREEN}✓${NC} Will use port ${CYAN}${PORT}${NC}"
         # Update docker-compose port
         sed -i.bak "s/127.0.0.1:3000:3000/127.0.0.1:${PORT}:3000/" docker-compose.yml
+        # Update NEXTAUTH_URL in .env if it exists
+        if [ -f ".env" ]; then
+            sed -i.bak "s|NEXTAUTH_URL=.*|NEXTAUTH_URL=http://localhost:${PORT}|" .env
+            rm -f .env.bak
+        fi
     else
         echo -e "  ${CYAN}→${NC} Stop the service using port 3000 and run ${BOLD}./deploy.sh${NC} again"
         exit 0
