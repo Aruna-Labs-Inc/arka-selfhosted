@@ -242,7 +242,7 @@ else
     
     POSTGRES_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)
     AUTH_SECRET=$(openssl rand -base64 32)
-    DATA_SOURCE_ENCRYPTION_KEY=$(openssl rand -base64 32)
+    DATA_SOURCE_ENCRYPTION_KEY=$(openssl rand -hex 32)
     OAUTH_ENCRYPTION_KEY=$(openssl rand -hex 32)
     
     cat > .env << EOF
