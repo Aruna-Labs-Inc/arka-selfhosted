@@ -49,6 +49,12 @@ services:
       # Arka Evaluation Key (Required)
       ARKA_EVALUATION_KEY: ${ARKA_EVALUATION_KEY}
       
+      # Data Source Encryption
+      DATA_SOURCE_ENCRYPTION_KEY: ${DATA_SOURCE_ENCRYPTION_KEY}
+      
+      # OAuth Encryption
+      OAUTH_ENCRYPTION_KEY: ${OAUTH_ENCRYPTION_KEY}
+      
       # S3 (optional)
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
