@@ -57,18 +57,25 @@ echo -e "${BOLD}  🔍 Checking Port Availability${NC}"
 echo ""
 
 if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo -e "  ${YELLOW}⚠${NC}  Port 3000 is already in use"
+    echo -e "  ${RED}${BOLD}⚠️  WARNING: Port 3000 is already in use${NC}"
     echo -e "  ${DIM}Another service is using port 3000${NC}"
+    echo ""
+    echo -e "  ${YELLOW}${BOLD}⚠️  IMPORTANT:${NC} ${BOLD}BigQuery OAuth requires localhost:3000${NC}"
+    echo -e "  ${DIM}Using a different port will prevent BigQuery OAuth from working.${NC}"
+    echo -e "  ${DIM}This is the fastest way to connect BigQuery on local machines.${NC}"
     echo ""
     echo -e "  ${BOLD}What would you like to do?${NC}"
     echo ""
-    echo -e "    ${BOLD}1)${NC} Use a different port (e.g., 3001)"
-    echo -e "    ${BOLD}2)${NC} Exit - I'll stop the other service"
+    echo -e "    ${BOLD}1)${NC} Use a different port (${YELLOW}BigQuery OAuth will NOT work${NC})"
+    echo -e "    ${BOLD}2)${NC} Exit - I'll stop the other service (${GREEN}Recommended${NC})"
     echo ""
     read -p "  Choose [1 or 2]: " choice
     echo ""
     
     if [ "$choice" = "1" ]; then
+        echo -e "  ${YELLOW}${BOLD}⚠️  WARNING:${NC} Proceeding without port 3000"
+        echo -e "  ${RED}BigQuery OAuth will NOT work on this port!${NC}"
+        echo ""
         read -p "  Enter port number [3001]: " PORT
         PORT=${PORT:-3001}
         echo -e "  ${GREEN}✓${NC} Will use port ${CYAN}${PORT}${NC}"
@@ -97,7 +104,11 @@ echo ""
 # Check if .env file exists
 if [ -f ".env" ]; then
     echo -e "  ${GREEN}✓${NC} Found existing .env file"
+    # Save PORT before sourcing .env to preserve port selection
+    SELECTED_PORT=$PORT
     source .env
+    # Restore PORT after sourcing
+    PORT=$SELECTED_PORT
     
     # Check if ARKA_EVALUATION_KEY exists
     if [ -z "$ARKA_EVALUATION_KEY" ]; then
