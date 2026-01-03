@@ -79,8 +79,9 @@ if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
         read -p "  Enter port number [3001]: " PORT
         PORT=${PORT:-3001}
         echo -e "  ${GREEN}✓${NC} Will use port ${CYAN}${PORT}${NC}"
-        # Update docker-compose port
-        sed -i.bak "s/127.0.0.1:3000:3000/127.0.0.1:${PORT}:3000/" docker-compose.yml
+        # Update docker-compose port (match any existing port mapping)
+        sed -i.bak "s/127.0.0.1:[0-9]*:3000/127.0.0.1:${PORT}:3000/" docker-compose.yml
+        rm -f docker-compose.yml.bak
         # Update NEXTAUTH_URL in .env if it exists
         if [ -f ".env" ]; then
             sed -i.bak "s|NEXTAUTH_URL=.*|NEXTAUTH_URL=http://localhost:${PORT}|" .env
@@ -93,6 +94,9 @@ if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
 else
     echo -e "  ${GREEN}${CHECK}${NC} Port 3000 is available"
     PORT=3000
+    # Reset docker-compose to use port 3000 if it was changed
+    sed -i.bak "s/127.0.0.1:[0-9]*:3000/127.0.0.1:3000:3000/" docker-compose.yml
+    rm -f docker-compose.yml.bak
 fi
 
 echo ""
